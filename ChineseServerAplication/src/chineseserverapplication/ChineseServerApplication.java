@@ -5,17 +5,36 @@
  */
 package chineseserverapplication;
 
-/**
- *
- * @author jakub
- */
-public class ChineseServerApplication {
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
+
+
+
+
+public class ChineseServerApplication 
+{  
+    Player players[] = new Player[6];
     
+    public static void main(String[] args) throws IOException
+    {
+        ArrayList<Communication> commList = new ArrayList<>();
+        try (ServerSocket serverSocket = new ServerSocket(6667))
+        {
+            while(true)
+            {
+                Socket socket = serverSocket.accept();
+                Communication communication = new Communication(socket, commList);
+                commList.add(communication);
+                communication.start();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("err : "+ e.getStackTrace());
+        }
+    
+    }
 }
