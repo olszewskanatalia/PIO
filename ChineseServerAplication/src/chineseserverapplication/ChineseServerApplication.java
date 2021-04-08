@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chineseclientapplication;
+package chineseserverapplication;
 
 /**
  *
  * @author jakub
  */
-public class ChineseClientApplication {
+public class ChineseServerApplication {
 
     /**
      * @param args the command line arguments
