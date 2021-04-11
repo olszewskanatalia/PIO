@@ -16,25 +16,35 @@ import java.util.ArrayList;
 
 public class ChineseServerApplication 
 {  
-    Player players[] = new Player[6];
+    
     
     public static void main(String[] args) throws IOException
     {
-        ArrayList<Communication> commList = new ArrayList<>();
-        try (ServerSocket serverSocket = new ServerSocket(6667))
+        ArrayList<Player> players = new ArrayList<Player>();
+        ArrayList<WaitingRoom> waitingrooms = new ArrayList<WaitingRoom>();
+        
+        ServerSocket serverSocket = new ServerSocket(0);
+        System.out.println("Server ip : " + serverSocket.getLocalPort() );
+        try
         {
             while(true)
             {
                 Socket socket = serverSocket.accept();
-                Communication communication = new Communication(socket, commList);
-                commList.add(communication);
-                communication.start();
+                if (players.size() < 7)
+                {
+                    WaitingRoom waitingroom = new WaitingRoom(socket, players);
+                    waitingrooms.add(waitingroom);
+                    waitingroom.start();
+                }
             }
         }
         catch (Exception e)
         {
             System.out.println("err : "+ e.getStackTrace());
         }
-    
+        finally
+        {
+            serverSocket.close();
+        }
     }
 }
