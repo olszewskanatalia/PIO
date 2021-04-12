@@ -23,6 +23,7 @@ public class ChineseServerApplication
         ArrayList<Player> players = new ArrayList<Player>();
         ArrayList<WaitingRoom> waitingrooms = new ArrayList<WaitingRoom>();
         
+        
         ServerSocket serverSocket = new ServerSocket(0);
         System.out.println("Server ip : " + serverSocket.getLocalPort() );
         try
@@ -35,6 +36,10 @@ public class ChineseServerApplication
                     WaitingRoom waitingroom = new WaitingRoom(socket, players);
                     waitingrooms.add(waitingroom);
                     waitingroom.start();
+                }
+                else
+                {
+                    socket.close();
                 }
             }
         }

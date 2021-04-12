@@ -36,8 +36,8 @@ public class WaitingRoom extends Thread {
         {
             try 
             {
-                Player newPlayer = new Player(playerSocket);
-                
+                Player newPlayer = new Player(playerSocket, players);
+
             }
             catch (IOException ex) 
             {
