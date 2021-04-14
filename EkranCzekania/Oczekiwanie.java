@@ -31,8 +31,4 @@ public class Oczekiwanie{
     public void przestan_pokazywac_ekran_czekania(){
         Oczekiwanie.frame.dispose();
     }
-    public static void main(String[] args){  //to tylko test tego nie będzie
-        new Oczekiwanie(); // wywoływanie okna
-        //Oczekiwanie.frame.dispose(); //zamykanie okna
-    }
 }
