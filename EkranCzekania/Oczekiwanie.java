@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
-public class Oczekiwanie{
+public class Oczekiwanie extends JFrame{
     private static JFrame frame = new JFrame();
     private static Icon gif;
     private static JLabel g;
