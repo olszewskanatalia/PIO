@@ -9,7 +9,6 @@ public class Oczekiwanie{
     private static JLabel g;
     public Oczekiwanie(){
         gif = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("lad.gif")));
-
         g = new JLabel(gif);
         frame.getContentPane().add(g);
 
