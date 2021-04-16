@@ -11,8 +11,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -26,9 +28,9 @@ public class Player extends Thread
     private boolean ready;
     private PrintWriter output;
     
-    private ArrayList<Player> players;
+    public List<Player> players;
     
-    public Player(Socket playerSocket, ArrayList<Player> players) throws IOException
+    public Player(Socket playerSocket, List<Player> players) throws IOException
     {
         if (addPlayer(playerSocket))
         {
@@ -36,6 +38,10 @@ public class Player extends Thread
             this.output = new PrintWriter(this.playerSocket.getOutputStream(), true);
             System.out.println("Dodano Gracza : " + this.nickname);
             this.players = players;
+            if (!addToPlayersList(players))
+            {
+                playerSocket.close();
+            }
             this.start();
         }
         else
@@ -45,9 +51,40 @@ public class Player extends Thread
         
     }
     
-    public Socket getSocket()
+    public boolean addPlayer(Socket playerSocket) throws IOException
     {
-        return playerSocket;
+        BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
+        this.playerSocket = playerSocket;
+        this.nickname = input.readLine();
+        return true;
+    }
+    
+    public synchronized boolean addToPlayersList(List<Player> players)
+    {
+        if(players.size() < 6)
+        {
+            players.add(this);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    public synchronized String changePlayerStatus()
+    {
+        return "nick='" + nickname + "', ready='" + ready + "'";
+    }
+    
+    public synchronized String packPlayerToString()
+    {
+        return "nick='" + nickname + "', color='" + color + "', ready='" + ready + "'";
+    }
+    
+    public synchronized boolean getIsReady()
+    {
+        return ready;
     }
     
     public String getNickname()
@@ -67,21 +104,13 @@ public class Player extends Thread
             BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
             System.out.println("Dostano : " + input.readLine());
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            players.remove(this);
             System.out.println("Wyrzucono gracza : " + nickname);
-            this.stop();
         }
     }
     
-    public boolean addPlayer(Socket playerSocket) throws IOException
-    {
-        BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
-        this.playerSocket = playerSocket;
-        this.nickname = input.readLine();
-        return true;
-    }
+    
 
     /**
      *
@@ -98,7 +127,9 @@ public class Player extends Thread
             } 
             catch (IOException ex) 
             {
+                players.remove(this);
                 Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+                return;
             }
         }
     }

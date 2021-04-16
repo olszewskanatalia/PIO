@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -20,36 +21,12 @@ public class ChineseServerApplication
     
     public static void main(String[] args) throws IOException
     {
-        ArrayList<Player> players = new ArrayList<Player>();
-        ArrayList<WaitingRoom> waitingrooms = new ArrayList<WaitingRoom>();
+        //List usunąć z 2 wszystko
+        List<Player> players = new ArrayList<>();
+        Communication communication = new Communication(players);
         
-        
-        ServerSocket serverSocket = new ServerSocket(0);
-        System.out.println("Server ip : " + serverSocket.getLocalPort() );
-        try
-        {
-            while(true)
-            {
-                Socket socket = serverSocket.accept();
-                if (players.size() < 7)
-                {
-                    WaitingRoom waitingroom = new WaitingRoom(socket, players);
-                    waitingrooms.add(waitingroom);
-                    waitingroom.start();
-                }
-                else
-                {
-                    socket.close();
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            System.out.println("err : "+ e.getStackTrace());
-        }
-        finally
-        {
-            serverSocket.close();
-        }
+        communication.start();
+        WaitingRoom.waitingRoom(players);
+        System.out.println("Rozpoczęto grę");
     }
 }

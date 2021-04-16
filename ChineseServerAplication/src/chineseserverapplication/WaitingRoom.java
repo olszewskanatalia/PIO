@@ -9,8 +9,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,30 +22,59 @@ import java.util.logging.Logger;
  */
 public class WaitingRoom extends Thread {
     
-    public ArrayList<Player> players;
-    public Socket playerSocket;
-            
-    public WaitingRoom(Socket socket, ArrayList<Player> players)
+    public List<Player> players;       
+    
+    public WaitingRoom(List<Player> players)
     {
         this.players = players;
-        this.playerSocket = socket;
     }
 
     @Override
     public void run() 
     {
-        if (players.size() < 7)
-        {
-            try 
+        ServerSocket serverSocket;
+        try {
+            serverSocket = new ServerSocket(0);
+            System.out.println("Server ip : " + serverSocket.getLocalPort() );
+            List<WaitingRoom> waitingrooms = new ArrayList<>();
+            try
             {
-                Player newPlayer = new Player(playerSocket, players);
+                while(true)
+                {
+                    Socket socket = serverSocket.accept();
+                    if (players.size() < 6)
+                    {
+                        try 
+                        {
+                            Player newPlayer = new Player(socket, players);
 
+                        }
+                        catch (IOException ex) 
+                        {
+                            System.out.println("Nie udało się połączyć użytkownika.");
+                        }
+                    }
+                    else
+                    {
+                        socket.close();
+                    }
+                }
             }
-            catch (IOException ex) 
+            catch (IOException e)
             {
-                Logger.getLogger(WaitingRoom.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("err : "+ e.getStackTrace());
             }
+            finally
+            {
+                serverSocket.close();
+            }
+        } 
+        catch (IOException ex) 
+        {
+            System.out.println("Nie udało sę utworzyć servera");
         }
+        
+    }
                     /*
         try
         {
@@ -64,13 +95,23 @@ public class WaitingRoom extends Thread {
         {
             System.out.println("Error : " + e.getStackTrace());
         }*/
-    }
-    private void printToAllClients(String outputString)
+    
+    public static boolean isPlayersReady(List<Player> players)
     {
-        /*
-        for(Communication cl: commList)
+        for (Player p : players) 
         {
-            
-        }*/
+            if (!p.getIsReady())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+    public static void waitingRoom( List<Player> players) throws IOException
+    {
+        WaitingRoom waitingRoom = new WaitingRoom(players);
+        waitingRoom.run();
     }
 }
