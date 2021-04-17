@@ -5,16 +5,11 @@
  */
 package chineseserverapplication;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,10 +18,12 @@ import java.util.logging.Logger;
 public class WaitingRoom extends Thread {
     
     public List<Player> players;       
+    ServerCommunication communication;
     
-    public WaitingRoom(List<Player> players)
+    public WaitingRoom(List<Player> players, ServerCommunication communication)
     {
         this.players = players;
+        this.communication = communication;
     }
 
     @Override
@@ -46,7 +43,7 @@ public class WaitingRoom extends Thread {
                     {
                         try 
                         {
-                            Player newPlayer = new Player(socket, players);
+                            Player newPlayer = new Player(socket, players, communication);
 
                         }
                         catch (IOException ex) 
@@ -109,9 +106,14 @@ public class WaitingRoom extends Thread {
     }
     
     
-    public static void waitingRoom( List<Player> players) throws IOException
+    public static void waitingRoom( List<Player> players, ServerCommunication communication) throws IOException
     {
-        WaitingRoom waitingRoom = new WaitingRoom(players);
+        WaitingRoom waitingRoom = new WaitingRoom(players, communication);
         waitingRoom.run();
+        while (isPlayersReady(players))
+        {
+            
+        }
+        System.out.println("Rozpoczęto grę");
     }
 }

@@ -6,8 +6,6 @@
 package chineseserverapplication;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +21,10 @@ public class ChineseServerApplication
     {
         //List usunąć z 2 wszystko
         List<Player> players = new ArrayList<>();
-        Communication communication = new Communication(players);
+        ServerCommunication communication = new ServerCommunication(players);
         
         communication.start();
-        WaitingRoom.waitingRoom(players);
-        System.out.println("Rozpoczęto grę");
+        WaitingRoom.waitingRoom(players, communication);
+        
     }
 }

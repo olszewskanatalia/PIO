@@ -28,21 +28,27 @@ public class Player extends Thread
     private boolean ready;
     private PrintWriter output;
     
+    private boolean isOnline;
+    
+    public ServerCommunication communication;
     public List<Player> players;
     
-    public Player(Socket playerSocket, List<Player> players) throws IOException
+    public Player(Socket playerSocket, List<Player> players, ServerCommunication communication) throws IOException
     {
         if (addPlayer(playerSocket))
         {
             this.ready = false;
             this.output = new PrintWriter(this.playerSocket.getOutputStream(), true);
-            System.out.println("Dodano Gracza : " + this.nickname);
             this.players = players;
+            this.communication = communication;
+            this.isOnline = true;
             if (!addToPlayersList(players))
             {
                 playerSocket.close();
             }
             this.start();
+            System.out.println("Dodano gracza : " + this.nickname);
+            System.out.println("Liczba graczy : " + players.size());
         }
         else
         {
@@ -56,6 +62,13 @@ public class Player extends Thread
         BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
         this.playerSocket = playerSocket;
         this.nickname = input.readLine();
+        for (Player p: players)
+        {
+            if (nickname.equals(p.getNickname()))
+            {
+                return false;
+            }
+        }
         return true;
     }
     
@@ -106,20 +119,16 @@ public class Player extends Thread
         }
         catch (IOException e)
         {
-            System.out.println("Wyrzucono gracza : " + nickname);
+            isOnline = false;
         }
     }
     
     
 
-    /**
-     *
-     * @throws IOException
-     */
     @Override
     public void run() 
     {
-        while (true)
+        while (isOnline)
         {
             try 
             {
@@ -127,11 +136,12 @@ public class Player extends Thread
             } 
             catch (IOException ex) 
             {
-                players.remove(this);
-                Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
-                return;
+                isOnline = false;
             }
         }
+        System.out.println("Wyrzucono gracza : " + nickname);
+        players.remove(this);
+        System.out.println( "Liczba graczy : " + players.size() );     
     }
     
 }

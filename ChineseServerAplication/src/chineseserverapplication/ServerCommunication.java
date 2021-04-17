@@ -7,20 +7,18 @@ package chineseserverapplication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import javax.management.Query;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author jakub
  */
-public class Communication extends Thread
+public class ServerCommunication extends Thread
 {
     public List<Player> players;
     
     private List<InternalAsk> internalAsks;
-    public Communication(List<Player> players)
+    public ServerCommunication(List<Player> players)
     {
         this.players = players;
         this.internalAsks = new ArrayList<>();
@@ -30,13 +28,25 @@ public class Communication extends Thread
         internalAsks.add(new InternalAsk(nickname, json));
     }
     
-    public void sendToPlayer(String nickname)
+    public void sendToPlayer(String nickname, String message)
     {
+        for (Player p : players)
+        {
+            if (p.getNickname().equals(nickname))
+            {
+                p.sendMessageToPlayer(message);
+                return;
+            }
+        }
+        
         
     }
-    public void sendToPlayers()
+    public void sendToPlayers(String message)
     {
-        
+        for (Player p : players)
+        {
+            p.sendMessageToPlayer(message);
+        }
     }
     
     public void run()
@@ -45,7 +55,7 @@ public class Communication extends Thread
         {
             if (internalAsks.size() > 0)
             {
-                
+                System.out.println(internalAsks.get(0).getNickname() + " : " + internalAsks.get(0).getJson());
             }
         }
     }
