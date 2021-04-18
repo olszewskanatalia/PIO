@@ -8,7 +8,6 @@ package chineseserverapplication;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,11 +18,13 @@ public class WaitingRoom extends Thread {
     
     public List<Player> players;       
     ServerCommunication communication;
+    BoardLogic board;
     
-    public WaitingRoom(List<Player> players, ServerCommunication communication)
+    public WaitingRoom(List<Player> players, ServerCommunication communication, BoardLogic board)
     {
         this.players = players;
         this.communication = communication;
+        this.board = board;
     }
 
     @Override
@@ -35,12 +36,12 @@ public class WaitingRoom extends Thread {
             System.out.println("Server ip : " + serverSocket.getLocalPort() );
             try
             {
-                while(true)
+                while(!board.getIsStarted())
                 {
                     Socket socket = serverSocket.accept();
-                    if (players.size() < 6)
+                    if (players.size() < 6 && !board.getIsStarted())
                     {
-                        addNewPlayer(socket);
+                        addNewPlayer(socket, board);
                     }
                     else
                     {
@@ -64,12 +65,12 @@ public class WaitingRoom extends Thread {
         }
         
     }
-    public void addNewPlayer(Socket socket)
+    public void addNewPlayer(Socket socket, BoardLogic board)
     {
         Thread t = new Thread(() -> {
             try
             {
-                Player newPlayer = new Player(socket, players, communication);
+                Player newPlayer = new Player(socket, players, communication, board);
                 
             }
             catch (IOException ex)
@@ -97,14 +98,15 @@ public class WaitingRoom extends Thread {
     }
     
     
-    public static void waitingRoom( List<Player> players, ServerCommunication communication) throws IOException
+    public static void waitingRoom( List<Player> players, ServerCommunication communication, BoardLogic board) throws IOException
     {
-        WaitingRoom waitingRoom = new WaitingRoom(players, communication);
+        WaitingRoom waitingRoom = new WaitingRoom(players, communication, board);
         waitingRoom.start();
         while (!isPlayersReady(players))
         {
 
         }
         System.out.println("Rozpoczęto grę");
+        
     }
 }

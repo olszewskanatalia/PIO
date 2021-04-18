@@ -23,7 +23,9 @@ public class ChineseServerApplication
         ServerCommunication communication = new ServerCommunication(players);
         BoardLogic board = new BoardLogic(players, communication);
         
-        WaitingRoom.waitingRoom(players, communication);
+        WaitingRoom.waitingRoom(players, communication, board);
+        
+        board.startGame();
         
     }
 }

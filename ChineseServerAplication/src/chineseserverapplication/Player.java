@@ -29,7 +29,7 @@ public class Player extends Thread
     public ServerCommunication communication;
     public List<Player> players;
     
-    public Player(Socket playerSocket, List<Player> players, ServerCommunication communication) throws IOException
+    public Player(Socket playerSocket, List<Player> players, ServerCommunication communication, BoardLogic board) throws IOException
     {
         this.players = players;
         if (addPlayer(playerSocket))
@@ -38,7 +38,7 @@ public class Player extends Thread
             this.output = new PrintWriter(this.playerSocket.getOutputStream(), true);
             this.communication = communication;
             this.isOnline = true;
-            if (!addToPlayersList(players))
+            if (!addToPlayersList(players, board))
             {
                 playerSocket.close();
             }
@@ -70,9 +70,9 @@ public class Player extends Thread
         
     }
     
-    public synchronized boolean addToPlayersList(List<Player> players)
+    public synchronized boolean addToPlayersList(List<Player> players, BoardLogic board)
     {
-        if(players.size() < 6)
+        if(players.size() < 6 && !board.getIsStarted())
         {
             players.add(this);
             return true;

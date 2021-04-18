@@ -21,5 +21,10 @@ public class Pawn
        this.Color = color;
        this.startPoint = startPoint;
        this.pawnRoute = pawnRoute;
+       this.pawnPosition = -1;
+    }
+    public boolean isAbleToMove(int number)
+    {
+        return false;
     }
 }
