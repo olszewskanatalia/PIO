@@ -33,7 +33,6 @@ public class WaitingRoom extends Thread {
         try {
             serverSocket = new ServerSocket(6000);
             System.out.println("Server ip : " + serverSocket.getLocalPort() );
-            List<WaitingRoom> waitingrooms = new ArrayList<>();
             try
             {
                 while(true)
@@ -72,29 +71,13 @@ public class WaitingRoom extends Thread {
         }
         
     }
-                    /*
-        try
-        {
-            
-            while (true)
-            {
-                String outputString = input.readLine();
-                if(outputString.equals("exit"))
-                {
-                    break;
-                }
-                printToAllClients(outputString);
-               System.out.println("Server recived : "+ outputString);
-            }
-            
-        }
-        catch(Exception e)
-        {
-            System.out.println("Error : " + e.getStackTrace());
-        }*/
-    
+
     public static synchronized boolean isPlayersReady(List<Player> players)
     {
+        if (players.isEmpty())
+        {
+            return false;
+        }
         for (Player p : players) 
         {
             if (!p.getIsReady())
@@ -110,9 +93,9 @@ public class WaitingRoom extends Thread {
     {
         WaitingRoom waitingRoom = new WaitingRoom(players, communication);
         waitingRoom.start();
-        while (isPlayersReady(players))
+        while (!isPlayersReady(players))
         {
-
+            System.out.println("err");
         }
         System.out.println("Rozpoczęto grę");
     }

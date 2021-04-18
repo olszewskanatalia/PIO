@@ -34,7 +34,7 @@ public class ServerCommunication
                 toSend.put("Operation", "changePlayerStatus");
                 toSend.put("nickname", player.getNickname());
                 toSend.put("status", player.getIsReady());
-                sendToPlayer(player.getNickname(), toSend.toString());
+                sendToPlayer(player, toSend.toString());
             }
         }
         catch (JSONException e)
@@ -43,17 +43,22 @@ public class ServerCommunication
         }
         
     }
-    
-    public void sendToPlayer(String nickname, String message)
+    public void sendInfoAboutPlayers(Player player)
     {
         for (Player p : players)
         {
-            if (p.getNickname().equals(nickname))
-            {
-                p.sendMessageToPlayer(message);
-                return;
-            }
+            JSONObject toSend = new JSONObject();
+            toSend.put("Operation", "addPlayer");
+            toSend.put("nickname", p.getNickname());
+            toSend.put("Color", "");
+            toSend.put("status", p.getIsReady());
+            sendToPlayer(player, toSend.toString());
         }
+    }
+    
+    public void sendToPlayer(Player player, String message)
+    {
+        player.sendMessageToPlayer(message);
         
         
     }

@@ -42,6 +42,7 @@ public class Player extends Thread
             {
                 playerSocket.close();
             }
+            communication.sendInfoAboutPlayers(this);
             this.start();
             System.out.println("Dodano gracza : " + this.nickname);
             System.out.println("Liczba graczy : " + players.size());
@@ -85,11 +86,6 @@ public class Player extends Thread
     public synchronized void changePlayerStatus()
     {
         ready = !ready;
-    }
-    
-    public synchronized String packPlayerToString()
-    {
-        return "nick='" + nickname + "', color='" + color + "', ready='" + ready + "'";
     }
     
     public synchronized boolean getIsReady()
