@@ -40,15 +40,7 @@ public class WaitingRoom extends Thread {
                     Socket socket = serverSocket.accept();
                     if (players.size() < 6)
                     {
-                        try 
-                        {
-                            Player newPlayer = new Player(socket, players, communication);
-
-                        }
-                        catch (IOException ex) 
-                        {
-                            System.out.println("Nie udało się połączyć użytkownika.");
-                        }
+                        addNewPlayer(socket);
                     }
                     else
                     {
@@ -68,10 +60,26 @@ public class WaitingRoom extends Thread {
         catch (IOException ex) 
         {
             System.out.println("Nie udało sę utworzyć servera");
+            System.exit(100);
         }
         
     }
-
+    public void addNewPlayer(Socket socket)
+    {
+        Thread t = new Thread(() -> {
+            try
+            {
+                Player newPlayer = new Player(socket, players, communication);
+                
+            }
+            catch (IOException ex)
+            {
+                System.out.println("Nie udało się połączyć użytkownika.");
+            } 
+        });
+        t.start();
+    }
+            
     public static synchronized boolean isPlayersReady(List<Player> players)
     {
         if (players.isEmpty())
@@ -95,7 +103,7 @@ public class WaitingRoom extends Thread {
         waitingRoom.start();
         while (!isPlayersReady(players))
         {
-            System.out.println("err");
+
         }
         System.out.println("Rozpoczęto grę");
     }
