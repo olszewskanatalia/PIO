@@ -31,7 +31,7 @@ public class WaitingRoom extends Thread {
     {
         ServerSocket serverSocket;
         try {
-            serverSocket = new ServerSocket(0);
+            serverSocket = new ServerSocket(6000);
             System.out.println("Server ip : " + serverSocket.getLocalPort() );
             List<WaitingRoom> waitingrooms = new ArrayList<>();
             try
@@ -93,7 +93,7 @@ public class WaitingRoom extends Thread {
             System.out.println("Error : " + e.getStackTrace());
         }*/
     
-    public static boolean isPlayersReady(List<Player> players)
+    public static synchronized boolean isPlayersReady(List<Player> players)
     {
         for (Player p : players) 
         {
@@ -109,10 +109,10 @@ public class WaitingRoom extends Thread {
     public static void waitingRoom( List<Player> players, ServerCommunication communication) throws IOException
     {
         WaitingRoom waitingRoom = new WaitingRoom(players, communication);
-        waitingRoom.run();
+        waitingRoom.start();
         while (isPlayersReady(players))
         {
-            
+
         }
         System.out.println("Rozpoczęto grę");
     }

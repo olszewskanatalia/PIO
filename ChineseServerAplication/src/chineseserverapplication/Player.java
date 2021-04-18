@@ -10,11 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.simple.JSONObject;
 
 /**
  *
@@ -35,11 +31,11 @@ public class Player extends Thread
     
     public Player(Socket playerSocket, List<Player> players, ServerCommunication communication) throws IOException
     {
+        this.players = players;
         if (addPlayer(playerSocket))
         {
             this.ready = false;
             this.output = new PrintWriter(this.playerSocket.getOutputStream(), true);
-            this.players = players;
             this.communication = communication;
             this.isOnline = true;
             if (!addToPlayersList(players))
@@ -62,14 +58,15 @@ public class Player extends Thread
         BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
         this.playerSocket = playerSocket;
         this.nickname = input.readLine();
-        for (Player p: players)
+        if (!players.isEmpty())
         {
-            if (nickname.equals(p.getNickname()))
+            if (!players.stream().noneMatch((p) -> (nickname.equals(p.getNickname())))) 
             {
                 return false;
             }
         }
         return true;
+        
     }
     
     public synchronized boolean addToPlayersList(List<Player> players)
@@ -85,9 +82,9 @@ public class Player extends Thread
         }
     }
     
-    public synchronized String changePlayerStatus()
+    public synchronized void changePlayerStatus()
     {
-        return "nick='" + nickname + "', ready='" + ready + "'";
+        ready = !ready;
     }
     
     public synchronized String packPlayerToString()
@@ -115,7 +112,8 @@ public class Player extends Thread
         try
         {
             BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
-            System.out.println("Dostano : " + input.readLine());
+            communication.makeAsk(this, input.readLine() );
+            //System.out.println("Dostano : " + input.readLine());
         }
         catch (IOException e)
         {
@@ -137,7 +135,7 @@ public class Player extends Thread
             catch (IOException ex) 
             {
                 isOnline = false;
-            }
+            } 
         }
         System.out.println("Wyrzucono gracza : " + nickname);
         players.remove(this);

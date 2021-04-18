@@ -23,7 +23,6 @@ public class ChineseServerApplication
         List<Player> players = new ArrayList<>();
         ServerCommunication communication = new ServerCommunication(players);
         
-        communication.start();
         WaitingRoom.waitingRoom(players, communication);
         
     }

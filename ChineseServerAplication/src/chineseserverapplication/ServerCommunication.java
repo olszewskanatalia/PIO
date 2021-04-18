@@ -5,27 +5,43 @@
  */
 package chineseserverapplication;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONObject;
+import org.json.*;
 
 /**
  *
  * @author jakub
  */
-public class ServerCommunication extends Thread
+public class ServerCommunication
 {
     public List<Player> players;
     
-    private List<InternalAsk> internalAsks;
     public ServerCommunication(List<Player> players)
     {
         this.players = players;
-        this.internalAsks = new ArrayList<>();
     }
-    public synchronized void addToAsks(String nickname, JSONObject json)
+    public synchronized void makeAsk(Player player, String inMessage)
     {
-        internalAsks.add(new InternalAsk(nickname, json));
+        try
+        {
+            JSONObject json = new JSONObject(inMessage);
+            System.out.println(json);
+            String operation = json.getString("Operation");
+            if (operation.equals("changePlayerStatus"))
+            {
+                player.changePlayerStatus();
+                JSONObject toSend = new JSONObject();
+                toSend.put("Operation", "changePlayerStatus");
+                toSend.put("nickname", player.getNickname());
+                toSend.put("status", player.getIsReady());
+                sendToPlayer(player.getNickname(), toSend.toString());
+            }
+        }
+        catch (JSONException e)
+        {
+            System.out.println("Błąd : " + player.getNickname() + " - " + inMessage);
+        }
+        
     }
     
     public void sendToPlayer(String nickname, String message)
@@ -43,40 +59,10 @@ public class ServerCommunication extends Thread
     }
     public void sendToPlayers(String message)
     {
-        for (Player p : players)
+        players.forEach((p) -> 
         {
             p.sendMessageToPlayer(message);
-        }
+        });
     }
     
-    public void run()
-    {
-        while (true)
-        {
-            if (internalAsks.size() > 0)
-            {
-                System.out.println(internalAsks.get(0).getNickname() + " : " + internalAsks.get(0).getJson());
-            }
-        }
-    }
-}
-
-
-class InternalAsk
-{
-    private String nickname;
-    private JSONObject json;
-    public InternalAsk(String nickname, JSONObject json)
-    {
-        this.nickname = nickname;
-        this.json = json;
-    }
-    public String getNickname()
-    {
-        return nickname;
-    }
-    public JSONObject getJson()
-    {
-        return json;
-    }
 }
