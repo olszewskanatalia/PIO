@@ -88,6 +88,10 @@ public class Player extends Thread
         
     }
     
+    public synchronized BoardLogic getBoard()
+    {
+        return board;
+    }
     public synchronized boolean addToPlayersList(List<Player> players, BoardLogic board)
     {
         if(players.size() < 6 && !board.getIsStarted())
@@ -131,7 +135,7 @@ public class Player extends Thread
         try
         {
             BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
-            communication.makeAsk(this, input.readLine() );
+            communication.makeAsk(this, input.readLine() , getBoard() );
             //System.out.println("Dostano : " + input.readLine());
         }
         catch (IOException e)

@@ -15,12 +15,13 @@ import org.json.*;
 public class ServerCommunication
 {
     public List<Player> players;
+    public BoardLogic board;
     
     public ServerCommunication(List<Player> players)
     {
         this.players = players;
     }
-    public synchronized void makeAsk(Player player, String inMessage)
+    public synchronized void makeAsk(Player player, String inMessage, BoardLogic board)
     {
         try
         {
@@ -29,12 +30,22 @@ public class ServerCommunication
             String operation = json.getString("Operation");
             if (operation.equals("changePlayerStatus"))
             {
+                
                 player.changePlayerStatus();
                 JSONObject toSend = new JSONObject();
                 toSend.put("Operation", "changePlayerStatus");
                 toSend.put("nickname", player.getNickname());
                 toSend.put("status", player.getIsReady());
                 sendToPlayer(player, toSend.toString());
+            }
+            else if (operation.equals("throwDice"))
+            {
+                board.throwDice(player);
+            }
+            else if (operation.equals("movePawn"))
+            {
+                String pawnID = json.getString("PawnID");
+                board.makeMovePawn(player, pawnID);
             }
         }
         catch (JSONException e)

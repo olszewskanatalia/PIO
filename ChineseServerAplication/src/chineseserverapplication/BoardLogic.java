@@ -82,10 +82,14 @@ public class BoardLogic extends Thread
     {
         return gameStatus;
     }
+    private synchronized String getPlayerTourNickname()
+    {
+        return playerTourNickname;
+    }
     
     public synchronized void throwDice(Player player)
     {
-        if (playerTourNickname.equals(player.getNickname()))
+        if (getPlayerTourNickname().equals(player.getNickname()))
         {
             if (this.getStatus().equals("WaitingForDice"))
             {
@@ -124,12 +128,13 @@ public class BoardLogic extends Thread
             }
     }
     
-    public synchronized void makeMovePawn(Player player, String pawnID, int numberOfMeshes)
+    public synchronized void makeMovePawn(Player player, String pawnID)
     {
-        if (playerTourNickname.equals(player.getNickname()))
+        if (getPlayerTourNickname().equals(player.getNickname()))
         {
             if (this.getStatus().equals("WaitingForMove"))
             {
+                int numberOfMeshes = gameCube.getNumberOfMeshes();
                 for (OneColorPawns ocp : colorPawns)
                 {
                     if (player.getColor().equals(ocp.getColor()))
