@@ -82,7 +82,7 @@ public class PawnsRoute
         return route.length;
     }
     
-    public String getRoute()
+    public String getRouteString()
     {
         String routeString = "";
         for(int j=0; j<getSize(); j++)
@@ -91,6 +91,14 @@ public class PawnsRoute
         }
         return routeString;
     }
+    
+    
+    
+    public String[] getRoute()
+    {
+        return route;
+    }
+    
     
     
     private void GreenPathBuilder()

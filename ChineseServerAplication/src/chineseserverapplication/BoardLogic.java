@@ -50,6 +50,7 @@ public class BoardLogic
         i += 1;
         playerTourNickname = players.get(i%players.size()).getNickname();
         gameStatus = "WaitingForDice";
+        //send
     }
     
     private void changeStatusToMove()
@@ -80,17 +81,33 @@ public class BoardLogic
                     {
                         for (Pawn p : ocp.getPawnsList())
                         {
-                            if (!p.isAbleToMove(gameCube.getNumberOfMeshes(), ocp.getPawnsList()))
+                            if (p.isAbleToMove(gameCube.getNumberOfMeshes(), ocp.getPawnsList()))
                             {
-                                nextPlayerTour();
+                                changeStatusToMove();
+                                //send
                             }
                         }
+                        nextPlayerTour();
                     }
                 }
-                changeStatusToMove();
             }
         }
         nextPlayerTour();
+    }
+    
+    private synchronized void killPawns(String newPosition)
+    {
+        for (OneColorPawns ocp : colorPawns)
+            {
+                for (Pawn p : ocp.getPawnsList())
+                {
+                    if (p.getPositionString().equals(newPosition))
+                    {
+                        p.killPawn();
+                        //send
+                    }
+                }
+            }
     }
     
     public synchronized void makeMovePawn(Player player, String pawnID, int numberOfMeshes)
@@ -99,7 +116,31 @@ public class BoardLogic
         {
             if (this.getStatus().equals("WaitingForMove"))
             {
-               
+                for (OneColorPawns ocp : colorPawns)
+                {
+                    if (player.getColor().equals(ocp.getColor()))
+                    {
+                        for (Pawn p : ocp.getPawnsList())
+                        {
+                            if (p.getPawnID().equals(pawnID))
+                            {
+                                if (p.isAbleToMove(gameCube.getNumberOfMeshes(), ocp.getPawnsList()))
+                                {
+                                    killPawns(p.getNewPositionString(numberOfMeshes));
+                                    p.movePawn(numberOfMeshes);
+                                    //send
+                                    nextPlayerTour();
+                                }
+                            }
+                            else
+                            {
+                                //send
+                                return;
+                            }
+                        }
+                    }
+                }
+                //send
             }
         }
     }

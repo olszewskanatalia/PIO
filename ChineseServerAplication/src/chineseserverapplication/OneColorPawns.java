@@ -31,7 +31,7 @@ public class OneColorPawns
         
         this.pawnRoute = new PawnsRoute(color);
         
-        System.out.println(pawnRoute.getRoute());
+        System.out.println(pawnRoute.getRouteString());
         
         this.pawns = new ArrayList<>();
         

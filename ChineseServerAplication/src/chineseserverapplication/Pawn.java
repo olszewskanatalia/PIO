@@ -26,22 +26,57 @@ public class Pawn
        this.pawnPosition = -1;
     }
     
-    public int getPosition()
+    public synchronized String getPawnID()
+    {
+        return pawnID;
+    }
+    
+    public synchronized int getPosition()
     {
         return pawnPosition;
     }
     
-    public void movePawn(int numberOfMeshes, List<OneColorPawns> Pawns)
+    public synchronized String getPositionString()
+    {
+        int i = getPosition();
+        if (i == -1)
+        {
+            return startPoint;
+        }
+        else
+        {
+            return pawnRoute.getRoute()[i];
+        }
+    }
+    
+    public synchronized String getNewPositionString(int numberOfMeshes)
+    {
+        int i = getPosition();
+        if (i == -1)
+        {
+            if (numberOfMeshes == 6)
+            {
+                return pawnRoute.getRoute()[0];
+            }
+        }
+        else
+        {
+            return pawnRoute.getRoute()[i+numberOfMeshes];
+        }
+        return startPoint;
+    }
+    
+    public synchronized void movePawn(int numberOfMeshes)
     {
         pawnPosition += numberOfMeshes;
     }
     
-    public void killPawn()
+    public synchronized void killPawn()
     {
         pawnPosition = -1;
     }
     
-    public boolean isAbleToMove(int numberOfMeshes, List<Pawn> OneColorPawns)
+    public synchronized boolean isAbleToMove(int numberOfMeshes, List<Pawn> OneColorPawns)
     {
         if (pawnPosition == -1)
         {
