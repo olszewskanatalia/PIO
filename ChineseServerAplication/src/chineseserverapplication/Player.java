@@ -97,6 +97,10 @@ public class Player extends Thread
     {
         return nickname;
     }
+    public String getColor()
+    {
+        return color;
+    }
     
     public void sendMessageToPlayer(String message)
     {

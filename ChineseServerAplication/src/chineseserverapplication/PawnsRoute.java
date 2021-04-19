@@ -17,71 +17,63 @@ public class PawnsRoute
     {
         route = new String[64];
         i=0;
-        if (color.equals("Zielony"))
-        {
-            GreenPathBuilder();
-            BlackPathBuilder();
-            YellowPathBuilder();
-            RedPathBuilder();
-            BluePathBuilder();
-            PurplePathBuilder();
-            
-            GreenEndPathBuilder();
-        }
-        else if (color.equals("Czarny"))
-        {
-            BlackPathBuilder();
-            YellowPathBuilder();
-            RedPathBuilder();
-            BluePathBuilder();
-            PurplePathBuilder();
-            GreenPathBuilder();
-            
-            BlackEndPathBuilder();
-        }
-        else if (color.equals("Żółty"))
-        {
-            YellowPathBuilder();
-            RedPathBuilder();
-            BluePathBuilder();
-            PurplePathBuilder();
-            GreenPathBuilder();
-            BlackPathBuilder();
-            
-            YellowEndPathBuilder();
-        }
-        else if (color.equals("Czerwony"))
-        {
-            RedPathBuilder();
-            BluePathBuilder();
-            PurplePathBuilder();
-            GreenPathBuilder();
-            BlackPathBuilder();
-            YellowPathBuilder();
-            
-            RedEndPathBuilder();
-        }
-        else if (color.equals("Niebieski"))
-        {
-            BluePathBuilder();
-            PurplePathBuilder();
-            GreenPathBuilder();
-            BlackPathBuilder();
-            YellowPathBuilder();
-            RedPathBuilder();
-            
-            BlueEndPathBuilder();
-        }
-        else if (color.equals("Fioletowy"))
-        {
-            PurplePathBuilder();
-            GreenPathBuilder();
-            BlackPathBuilder();
-            YellowPathBuilder();
-            RedPathBuilder();
-            BluePathBuilder();
-            
-            PurpleEndPathBuilder();
+        switch (color) {
+            case "Zielony":
+                GreenPathBuilder();
+                BlackPathBuilder();
+                YellowPathBuilder();
+                RedPathBuilder();
+                BluePathBuilder();
+                PurplePathBuilder();
+                GreenEndPathBuilder();
+                break;
+            case "Czarny":
+                BlackPathBuilder();
+                YellowPathBuilder();
+                RedPathBuilder();
+                BluePathBuilder();
+                PurplePathBuilder();
+                GreenPathBuilder();
+                BlackEndPathBuilder();
+                break;
+            case "Żółty":
+                YellowPathBuilder();
+                RedPathBuilder();
+                BluePathBuilder();
+                PurplePathBuilder();
+                GreenPathBuilder();
+                BlackPathBuilder();
+                YellowEndPathBuilder();
+                break;
+            case "Czerwony":
+                RedPathBuilder();
+                BluePathBuilder();
+                PurplePathBuilder();
+                GreenPathBuilder();
+                BlackPathBuilder();
+                YellowPathBuilder();
+                RedEndPathBuilder();
+                break;
+            case "Niebieski":
+                BluePathBuilder();
+                PurplePathBuilder();
+                GreenPathBuilder();
+                BlackPathBuilder();
+                YellowPathBuilder();
+                RedPathBuilder();
+                BlueEndPathBuilder();
+                break;
+            case "Fioletowy":
+                PurplePathBuilder();
+                GreenPathBuilder();
+                BlackPathBuilder();
+                YellowPathBuilder();
+                RedPathBuilder();
+                BluePathBuilder();
+                PurpleEndPathBuilder();
+                break;
+            default:
+                break;
         }
     }
     
@@ -93,9 +85,9 @@ public class PawnsRoute
     public String getRoute()
     {
         String routeString = "";
-        for(int i=0; i<getSize(); i++)
+        for(int j=0; j<getSize(); j++)
         {
-            routeString = routeString + " " + route[i];
+            routeString = routeString + " " + route[j];
         }
         return routeString;
     }

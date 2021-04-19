@@ -21,6 +21,7 @@ public class BoardLogic
     ServerCommunication communication;
     GameCube gameCube;
     String gameStatus;
+    
     public BoardLogic(List <Player> players, ServerCommunication communication)
     {
         this.colorPawns = new ArrayList<>();
@@ -42,14 +43,64 @@ public class BoardLogic
         isStared = true;
         i = 0;
         playerTourNickname = players.get(0).getNickname();
+        gameStatus = "WaitingForDice";
     }
-    public boolean getIsStarted()
+    private void nextPlayerTour()
+    {
+        i += 1;
+        playerTourNickname = players.get(i%players.size()).getNickname();
+        gameStatus = "WaitingForDice";
+    }
+    
+    private void changeStatusToMove()
+    {
+        gameStatus = "WaitingForMove";
+    }
+    
+    public synchronized boolean getIsStarted()
     {
         return isStared;
     }
     
-    public void makeMove(String pawnID, int numberOfMeshes)
+    private synchronized String getStatus()
     {
-        
+        return gameStatus;
+    }
+    
+    public synchronized void throwDice(Player player)
+    {
+        if (playerTourNickname.equals(player.getNickname()))
+        {
+            if (this.getStatus().equals("WaitingForDice"))
+            {
+                gameCube.generateRandomOfMeshes();
+                for (OneColorPawns ocp : colorPawns)
+                {
+                    if (player.getColor().equals(ocp.getColor()))
+                    {
+                        for (Pawn p : ocp.getPawnsList())
+                        {
+                            if (!p.isAbleToMove(gameCube.getNumberOfMeshes(), ocp.getPawnsList()))
+                            {
+                                nextPlayerTour();
+                            }
+                        }
+                    }
+                }
+                changeStatusToMove();
+            }
+        }
+        nextPlayerTour();
+    }
+    
+    public synchronized void makeMovePawn(Player player, String pawnID, int numberOfMeshes)
+    {
+        if (playerTourNickname.equals(player.getNickname()))
+        {
+            if (this.getStatus().equals("WaitingForMove"))
+            {
+               
+            }
+        }
     }
 }

@@ -14,11 +14,15 @@ import java.util.ArrayList;
  */
 public class OneColorPawns 
 {
-    String color;
+    private String color;
     
-    PawnsRoute pawnRoute;
+    private PawnsRoute pawnRoute;
     
-    List<Pawn> pawns;
+    private List<Pawn> pawns;
+    
+    
+    
+            
     
     public OneColorPawns(String color)
     {
@@ -33,30 +37,38 @@ public class OneColorPawns
         
         for (int i = 1; i<5; i++)
         {
-            if (color.equals("Zielony"))
-            {
-                pawns.add(new Pawn("Z" + i, color, "Z" + i, pawnRoute));
-            }
-            else if (color.equals("Czarny"))
-            {
-                pawns.add(new Pawn("B" + i, color, "B" + i, pawnRoute));
-            }
-            else if (color.equals("Żółty"))
-            {
-                pawns.add(new Pawn("Y" + i, color, "Y" + i, pawnRoute));
-            }
-            else if (color.equals("Czerwony"))
-            {
-                pawns.add(new Pawn("R" + i, color, "R" + i, pawnRoute));
-            }
-            else if (color.equals("Niebieski"))
-            {
-                pawns.add(new Pawn("N" + i, color, "N" + i, pawnRoute));
-            }
-            else if (color.equals("Fioletowy"))
-            {
-                pawns.add(new Pawn("P" + i, color, "P" + i, pawnRoute));
+            switch (color) {
+                case "Zielony":
+                    pawns.add(new Pawn("Z" + i, color, "Z" + i, pawnRoute));
+                    break;
+                case "Czarny":
+                    pawns.add(new Pawn("B" + i, color, "B" + i, pawnRoute));
+                    break;
+                case "Żółty":
+                    pawns.add(new Pawn("Y" + i, color, "Y" + i, pawnRoute));
+                    break;
+                case "Czerwony":
+                    pawns.add(new Pawn("R" + i, color, "R" + i, pawnRoute));
+                    break;
+                case "Niebieski":
+                    pawns.add(new Pawn("N" + i, color, "N" + i, pawnRoute));
+                    break;
+                case "Fioletowy":
+                    pawns.add(new Pawn("P" + i, color, "P" + i, pawnRoute));
+                    break;
+                default:
+                    break;
             }
         }
+    }
+    
+    
+    public synchronized List<Pawn> getPawnsList()
+    {
+        return pawns;
+    }
+    public synchronized String getColor()
+    {
+        return color;
     }
 }

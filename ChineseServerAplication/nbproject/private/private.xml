@@ -14,7 +14,13 @@
         <group>
             <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/ChineseServerApplication.java</file>
             <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/Player.java</file>
+            <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/Pawn.java</file>
             <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/WaitingRoom.java</file>
+            <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/OneColorPawns.java</file>
+            <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/ServerCommunication.java</file>
+            <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/PawnsRoute.java</file>
+            <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/GameCube.java</file>
+            <file>file:/C:/Studia/II%20semestr/PIO/PIO/ChineseServerAplication/src/chineseserverapplication/BoardLogic.java</file>
         </group>
     </open-files>
 </project-private>

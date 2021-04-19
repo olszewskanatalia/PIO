@@ -5,15 +5,17 @@
  */
 package chineseserverapplication;
 
+import java.util.List;
+
 
 public class Pawn 
 {
-    String pawnID;
-    String Color;
-    int pawnPosition;
+    private final String pawnID;
+    private final String Color;
+    private int pawnPosition;
     
-    String startPoint;
-    PawnsRoute pawnRoute;
+    private final String startPoint;
+    private final PawnsRoute pawnRoute;
     
     public Pawn(String pawnID, String color, String startPoint, PawnsRoute pawnRoute)
     {
@@ -23,8 +25,49 @@ public class Pawn
        this.pawnRoute = pawnRoute;
        this.pawnPosition = -1;
     }
-    public boolean isAbleToMove(int number)
+    
+    public int getPosition()
     {
+        return pawnPosition;
+    }
+    
+    public void movePawn(int numberOfMeshes, List<OneColorPawns> Pawns)
+    {
+        pawnPosition += numberOfMeshes;
+    }
+    
+    public void killPawn()
+    {
+        pawnPosition = -1;
+    }
+    
+    public boolean isAbleToMove(int numberOfMeshes, List<Pawn> OneColorPawns)
+    {
+        if (pawnPosition == -1)
+        {
+            if (numberOfMeshes == 6)
+            {
+                for (Pawn p : OneColorPawns)
+                {
+                    if (p.getPosition() == 0)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if (pawnPosition + numberOfMeshes < pawnRoute.getSize())
+        {
+            for (Pawn p : OneColorPawns)
+                {
+                    if (p.getPosition() == pawnPosition + numberOfMeshes)
+                    {
+                        return false;
+                    }
+                }
+            return true;
+        }
         return false;
     }
 }
