@@ -64,6 +64,50 @@ public class ServerCommunication
         sendToPlayers(toSend.toString());
     }
     
+    public void movePawnInfo(Pawn pawn)
+    {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "movePawn");
+        toSend.put("pawnID", pawn.getPawnID());
+        toSend.put("pawnPosition", pawn.getPositionString());
+        sendToPlayers(toSend.toString());
+    }
+    
+    public void ThrownDice(int numberOfMeshes)
+    {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "thrownDice");
+        toSend.put("NumberOfMeshes",numberOfMeshes);
+        sendToPlayers(toSend.toString());
+    }
+    
+    public void endGame(String winPlayer)
+    {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "endGame");
+        toSend.put("WinPlayer",winPlayer);
+        sendToPlayers(toSend.toString());
+    }
+    
+    
+    public void playerTourThrowDice(String nickname)
+    {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "gameStatus");
+        toSend.put("Type","waitingForDice");
+        toSend.put("nickname", nickname);
+        sendToPlayers(toSend.toString());
+    }
+    
+    public void playerTourMovePawn(String nickname)
+    {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "gameStatus");
+        toSend.put("Type","waitingForMove");
+        toSend.put("nickname", nickname);
+        sendToPlayers(toSend.toString());
+    }
+    
     public void sendInfoAboutPlayers(Player player)
     {
         for (Player p : players)
@@ -94,6 +138,9 @@ public class ServerCommunication
         toSend.put("nickname", player.getNickname());
         sendToPlayers(toSend.toString());
     }
+    
+    
+    
     
     private void sendToPlayer(Player player, String message)
     {

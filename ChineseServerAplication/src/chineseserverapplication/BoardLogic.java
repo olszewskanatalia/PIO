@@ -8,7 +8,7 @@ package chineseserverapplication;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardLogic
+public class BoardLogic extends Thread
 {
     private boolean isStared;
     
@@ -54,17 +54,18 @@ public class BoardLogic
         }
     }
     
-    private void nextPlayerTour()
+    private synchronized void nextPlayerTour()
     {
         i += 1;
         playerTourNickname = players.get(i%players.size()).getNickname();
         gameStatus = "WaitingForDice";
-        //send
+        communication.playerTourThrowDice(playerTourNickname);
     }
     
-    private void changeStatusToMove()
+    private synchronized void changeStatusToMove()
     {
         gameStatus = "WaitingForMove";
+        communication.playerTourMovePawn(playerTourNickname);
     }
     
     public synchronized List <OneColorPawns> getPawnsList()
@@ -98,7 +99,6 @@ public class BoardLogic
                             if (p.isAbleToMove(gameCube.getNumberOfMeshes(), ocp.getPawnsList()))
                             {
                                 changeStatusToMove();
-                                //send
                             }
                         }
                         nextPlayerTour();
@@ -118,7 +118,7 @@ public class BoardLogic
                     if (p.getPositionString().equals(newPosition))
                     {
                         p.killPawn();
-                        //send
+                        communication.movePawnInfo(p);
                     }
                 }
             }
@@ -142,19 +142,53 @@ public class BoardLogic
                                 {
                                     killPawns(p.getNewPositionString(numberOfMeshes));
                                     p.movePawn(numberOfMeshes);
-                                    //send
+                                    
+                                    communication.movePawnInfo(p);
+                                            
                                     nextPlayerTour();
                                 }
-                            }
-                            else
-                            {
-                                //send
-                                return;
+                                else
+                                {
+                                    communication.playerTourMovePawn(playerTourNickname);
+                                    return;
+                                }
                             }
                         }
                     }
                 }
-                //send
+                communication.playerTourMovePawn(playerTourNickname);
+            }
+        }
+    }
+    
+    
+    @Override
+    public void run()
+    {
+        while (true)
+        {
+            for (OneColorPawns ocp : colorPawns)
+            {
+                int howManyInHome = 0;
+                for (Pawn p : ocp.getPawnsList())
+                {
+                    if (p.getPosition() > 59)
+                    {
+                        howManyInHome++;
+                    }
+                }
+                if (howManyInHome == 4)
+                {
+                    for (Player player : players)
+                    {
+                        if (player.getColor().equals(ocp.getColor()))
+                        {
+                            communication.endGame(player.getNickname());
+                            System.out.println("Koniec gry. Wygrał : " + player.getNickname());
+                            System.exit(0);
+                        }
+                    }
+                }
             }
         }
     }
