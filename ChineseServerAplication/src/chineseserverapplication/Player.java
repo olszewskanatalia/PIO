@@ -92,6 +92,7 @@ public class Player extends Thread
     {
         if(players.size() < 6 && !board.getIsStarted())
         {
+            communication.addPlayer(this);
             players.add(this);
             return true;
         }

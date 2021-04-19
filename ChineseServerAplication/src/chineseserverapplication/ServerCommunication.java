@@ -77,10 +77,21 @@ public class ServerCommunication
         }
     }
     
+    public void addPlayer(Player player)
+    {
+        JSONObject toSend = new JSONObject();
+            toSend.put("Operation", "addPlayer");
+            toSend.put("nickname", player.getNickname());
+            toSend.put("Color", player.getColor());
+            toSend.put("status", player.getIsReady());
+            sendToPlayers( toSend.toString());
+    }
+    
     public void removePlayer(Player player)
     {
         JSONObject toSend = new JSONObject();
         toSend.put("Operation", "removePlayer");
+        toSend.put("nickname", player.getNickname());
         sendToPlayers(toSend.toString());
     }
     
