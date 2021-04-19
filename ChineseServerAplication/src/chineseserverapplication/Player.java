@@ -28,33 +28,42 @@ public class Player extends Thread
     
     public ServerCommunication communication;
     public List<Player> players;
+    public BoardLogic board;
+    public Colors colors;
     
-    public Player(Socket playerSocket, List<Player> players, ServerCommunication communication, BoardLogic board) throws IOException
+    public Player(Socket playerSocket, List<Player> players, ServerCommunication communication, BoardLogic board, Colors colors) throws IOException
     {
         this.players = players;
-        if (addPlayer(playerSocket))
-        {
-            this.ready = false;
-            this.output = new PrintWriter(this.playerSocket.getOutputStream(), true);
-            this.communication = communication;
-            this.isOnline = true;
-            if (!addToPlayersList(players, board))
+        
+            if (addPlayer(playerSocket, colors))
+            {
+                this.ready = false;
+                this.output = new PrintWriter(this.playerSocket.getOutputStream(), true);
+                this.communication = communication;
+                this.isOnline = true;
+                this.board = board;
+                this.colors = colors;
+                if (!addToPlayersList(players, board))
+                {
+                    playerSocket.close();
+                    return;
+                }
+                communication.sendInfoAboutPlayers(this);
+                this.start();
+                System.out.println("Dodano gracza : " + this.nickname);
+                System.out.println("Liczba graczy : " + players.size());
+            }
+            else
             {
                 playerSocket.close();
+                System.out.println("Nie udało się dodać gracza : " + nickname);
             }
-            communication.sendInfoAboutPlayers(this);
-            this.start();
-            System.out.println("Dodano gracza : " + this.nickname);
-            System.out.println("Liczba graczy : " + players.size());
-        }
-        else
-        {
-            playerSocket.close();
-        }
+        
+        
         
     }
     
-    public boolean addPlayer(Socket playerSocket) throws IOException
+    public synchronized boolean addPlayer(Socket playerSocket, Colors colors) throws IOException
     {
         BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
         this.playerSocket = playerSocket;
@@ -66,7 +75,16 @@ public class Player extends Thread
                 return false;
             }
         }
-        return true;
+        
+        try 
+        {
+            this.color = colors.getFreeColor();
+        }
+        catch (Exception e)
+        {
+           System.out.println("nie udało się wybrać koloru"); 
+        }
+        return this.color != null;
         
     }
     
@@ -137,6 +155,10 @@ public class Player extends Thread
                 isOnline = false;
             } 
         }
+        board.removePlayer();
+        communication.removePlayer(this);
+        colors.freeColor(color);
+        
         System.out.println("Wyrzucono gracza : " + nickname);
         players.remove(this);
         System.out.println( "Liczba graczy : " + players.size() );     

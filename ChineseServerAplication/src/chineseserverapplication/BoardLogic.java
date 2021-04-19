@@ -45,6 +45,15 @@ public class BoardLogic
         playerTourNickname = players.get(0).getNickname();
         gameStatus = "WaitingForDice";
     }
+    
+    public synchronized void removePlayer()
+    {
+        if (isStared)
+        {
+            nextPlayerTour();
+        }
+    }
+    
     private void nextPlayerTour()
     {
         i += 1;
@@ -56,6 +65,11 @@ public class BoardLogic
     private void changeStatusToMove()
     {
         gameStatus = "WaitingForMove";
+    }
+    
+    public synchronized List <OneColorPawns> getPawnsList()
+    {
+       return colorPawns;
     }
     
     public synchronized boolean getIsStarted()

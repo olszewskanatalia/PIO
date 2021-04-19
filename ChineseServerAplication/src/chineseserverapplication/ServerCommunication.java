@@ -43,6 +43,27 @@ public class ServerCommunication
         }
         
     }
+    
+    public void sendStartGameInfo(BoardLogic board)
+    {
+        
+        for (OneColorPawns ocp : board.getPawnsList())
+        {
+            for (Pawn p : ocp.getPawnsList())
+            {
+                JSONObject toSend = new JSONObject();
+                toSend.put("Operation", "initPawn");
+                toSend.put("pawnID", p.getPawnID());
+                toSend.put("color", p.getPawnColor());
+                toSend.put("pawnPosition", p.getPositionString());
+                sendToPlayers(toSend.toString());
+            }
+        }
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "startGame");
+        sendToPlayers(toSend.toString());
+    }
+    
     public void sendInfoAboutPlayers(Player player)
     {
         for (Player p : players)
@@ -50,19 +71,24 @@ public class ServerCommunication
             JSONObject toSend = new JSONObject();
             toSend.put("Operation", "addPlayer");
             toSend.put("nickname", p.getNickname());
-            toSend.put("Color", "");
+            toSend.put("Color", p.getColor());
             toSend.put("status", p.getIsReady());
             sendToPlayer(player, toSend.toString());
         }
     }
     
-    public void sendToPlayer(Player player, String message)
+    public void removePlayer(Player player)
+    {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "removePlayer");
+        sendToPlayers(toSend.toString());
+    }
+    
+    private void sendToPlayer(Player player, String message)
     {
         player.sendMessageToPlayer(message);
-        
-        
     }
-    public void sendToPlayers(String message)
+    private void sendToPlayers(String message)
     {
         players.forEach((p) -> 
         {

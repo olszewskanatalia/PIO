@@ -11,7 +11,7 @@ import java.util.List;
 public class Pawn 
 {
     private final String pawnID;
-    private final String Color;
+    private final String color;
     private int pawnPosition;
     
     private final String startPoint;
@@ -20,7 +20,7 @@ public class Pawn
     public Pawn(String pawnID, String color, String startPoint, PawnsRoute pawnRoute)
     {
        this.pawnID = pawnID;
-       this.Color = color;
+       this.color = color;
        this.startPoint = startPoint;
        this.pawnRoute = pawnRoute;
        this.pawnPosition = -1;
@@ -34,6 +34,11 @@ public class Pawn
     public synchronized int getPosition()
     {
         return pawnPosition;
+    }
+    
+    public synchronized String getPawnColor()
+    {
+        return color;
     }
     
     public synchronized String getPositionString()

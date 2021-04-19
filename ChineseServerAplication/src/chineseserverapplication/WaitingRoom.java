@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,12 +21,14 @@ public class WaitingRoom extends Thread {
     public List<Player> players;       
     ServerCommunication communication;
     BoardLogic board;
-    
-    public WaitingRoom(List<Player> players, ServerCommunication communication, BoardLogic board)
+    Colors colors;
+            
+    public WaitingRoom(List<Player> players, ServerCommunication communication, BoardLogic board, Colors colors)
     {
         this.players = players;
         this.communication = communication;
         this.board = board;
+        this.colors = colors;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class WaitingRoom extends Thread {
                     Socket socket = serverSocket.accept();
                     if (players.size() < 6 && !board.getIsStarted())
                     {
-                        addNewPlayer(socket, board);
+                        addNewPlayer(socket, board, colors);
                     }
                     else
                     {
@@ -65,18 +69,19 @@ public class WaitingRoom extends Thread {
         }
         
     }
-    public void addNewPlayer(Socket socket, BoardLogic board)
+    public void addNewPlayer(Socket socket, BoardLogic board, Colors colors)
     {
         Thread t = new Thread(() -> {
+            System.out.println("tutaj jestem jeszcze");
             try
             {
-                Player newPlayer = new Player(socket, players, communication, board);
+                Player newPlayer = new Player(socket, players, communication, board, colors);
                 
             }
             catch (IOException ex)
             {
                 System.out.println("Nie udało się połączyć użytkownika.");
-            } 
+            }
         });
         t.start();
     }
@@ -98,9 +103,9 @@ public class WaitingRoom extends Thread {
     }
     
     
-    public static void waitingRoom( List<Player> players, ServerCommunication communication, BoardLogic board) throws IOException
+    public static void waitingRoom( List<Player> players, ServerCommunication communication, BoardLogic board, Colors colors) throws IOException
     {
-        WaitingRoom waitingRoom = new WaitingRoom(players, communication, board);
+        WaitingRoom waitingRoom = new WaitingRoom(players, communication, board, colors);
         waitingRoom.start();
         while (!isPlayersReady(players))
         {
