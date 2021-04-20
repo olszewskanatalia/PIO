@@ -52,7 +52,6 @@ public class ServerCommunication
         {
             System.out.println("Błąd : " + player.getNickname() + " - " + inMessage);
         }
-        
     }
     
     public void sendStartGameInfo(BoardLogic board)
@@ -101,7 +100,7 @@ public class ServerCommunication
     }
     
     
-    public void playerTourThrowDice(String nickname)
+    private void playerTourThrowDice(String nickname)
     {
         JSONObject toSend = new JSONObject();
         toSend.put("Operation", "gameStatus");
@@ -110,13 +109,25 @@ public class ServerCommunication
         sendToPlayers(toSend.toString());
     }
     
-    public void playerTourMovePawn(String nickname)
+    private void playerTourMovePawn(String nickname)
     {
         JSONObject toSend = new JSONObject();
         toSend.put("Operation", "gameStatus");
         toSend.put("Type","waitingForMove");
         toSend.put("nickname", nickname);
         sendToPlayers(toSend.toString());
+    }
+    
+    public synchronized void playerTourInfo(String nickname, String gameStatus)
+    {
+        if (gameStatus.equals("WaitingForDice"))
+        {
+            playerTourThrowDice(nickname);
+        }
+        else if (gameStatus.equals("WaitingForMove"))
+        {
+            playerTourMovePawn(nickname);
+        }
     }
     
     public void sendInfoAboutPlayers(Player player)

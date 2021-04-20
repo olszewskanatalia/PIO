@@ -43,7 +43,9 @@ public class BoardLogic extends Thread
         isStared = true;
         i = 0;
         playerTourNickname = players.get(0).getNickname();
+        communication.sendStartGameInfo(this);
         gameStatus = "WaitingForDice";
+        communication.playerTourInfo(getPlayerTourNickname(), getStatus());
     }
     
     public synchronized void removePlayer()
@@ -59,13 +61,13 @@ public class BoardLogic extends Thread
         i += 1;
         playerTourNickname = players.get(i%players.size()).getNickname();
         gameStatus = "WaitingForDice";
-        communication.playerTourThrowDice(playerTourNickname);
+        communication.playerTourInfo(getPlayerTourNickname(), getStatus());
     }
     
     private synchronized void changeStatusToMove()
     {
         gameStatus = "WaitingForMove";
-        communication.playerTourMovePawn(playerTourNickname);
+        communication.playerTourInfo(getPlayerTourNickname(), getStatus());
     }
     
     public synchronized List <OneColorPawns> getPawnsList()
@@ -78,7 +80,7 @@ public class BoardLogic extends Thread
         return isStared;
     }
     
-    private synchronized String getStatus()
+    private synchronized String getStatus() 
     {
         return gameStatus;
     }
@@ -94,6 +96,7 @@ public class BoardLogic extends Thread
             if (this.getStatus().equals("WaitingForDice"))
             {
                 gameCube.generateRandomOfMeshes();
+                communication.ThrownDice(gameCube.getNumberOfMeshes());
                 for (OneColorPawns ocp : colorPawns)
                 {
                     if (player.getColor().equals(ocp.getColor()))
@@ -103,14 +106,17 @@ public class BoardLogic extends Thread
                             if (p.isAbleToMove(gameCube.getNumberOfMeshes(), ocp.getPawnsList()))
                             {
                                 changeStatusToMove();
+                                return;
                             }
                         }
-                        nextPlayerTour();
+                        
                     }
                 }
+                System.out.println("ty?");
+                nextPlayerTour();
+                return;
             }
         }
-        nextPlayerTour();
     }
     
     private synchronized void killPawns(String newPosition)
@@ -149,19 +155,19 @@ public class BoardLogic extends Thread
                                     p.movePawn(numberOfMeshes);
                                     
                                     communication.movePawnInfo(p);
-                                            
+                                    
                                     nextPlayerTour();
+                                    
+                                    return;
                                 }
                                 else
                                 {
-                                    communication.playerTourMovePawn(playerTourNickname);
                                     return;
                                 }
                             }
                         }
                     }
                 }
-                communication.playerTourMovePawn(playerTourNickname);
             }
         }
     }

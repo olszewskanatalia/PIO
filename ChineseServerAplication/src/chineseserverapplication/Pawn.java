@@ -73,7 +73,14 @@ public class Pawn
     
     public synchronized void movePawn(int numberOfMeshes)
     {
-        pawnPosition += numberOfMeshes;
+        if (pawnPosition == -1)
+        {
+            pawnPosition = 0;
+        }
+        else
+        {
+            pawnPosition += numberOfMeshes;
+        }
     }
     
     public synchronized void killPawn()
