@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -24,6 +25,7 @@ public class Player extends Thread
     private boolean ready;
     private PrintWriter output;
     
+    
     private boolean isOnline;
     
     public ServerCommunication communication;
@@ -34,7 +36,6 @@ public class Player extends Thread
     public Player(Socket playerSocket, List<Player> players, ServerCommunication communication, BoardLogic board, Colors colors) throws IOException
     {
         this.players = players;
-        
             if (addPlayer(playerSocket, colors))
             {
                 this.ready = false;
@@ -65,9 +66,9 @@ public class Player extends Thread
     
     public synchronized boolean addPlayer(Socket playerSocket, Colors colors) throws IOException
     {
-        BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
+        Scanner input = new Scanner( new InputStreamReader(playerSocket.getInputStream()) );
         this.playerSocket = playerSocket;
-        this.nickname = input.readLine();
+        this.nickname = input.next();
         if (!players.isEmpty())
         {
             if (!players.stream().noneMatch((p) -> (nickname.equals(p.getNickname())))) 
@@ -134,9 +135,8 @@ public class Player extends Thread
     {
         try
         {
-            BufferedReader input = new BufferedReader( new InputStreamReader(playerSocket.getInputStream()) );
-            communication.makeAsk(this, input.readLine() , getBoard() );
-            //System.out.println("Dostano : " + input.readLine());
+            Scanner input = new Scanner( new InputStreamReader(playerSocket.getInputStream()) );
+            communication.makeAsk(this, input.next() , getBoard() );
         }
         catch (IOException e)
         {

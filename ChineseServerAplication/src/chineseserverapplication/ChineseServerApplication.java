@@ -28,6 +28,5 @@ public class ChineseServerApplication
         
         board.startGame();
         
-        board.start();
     }
 }

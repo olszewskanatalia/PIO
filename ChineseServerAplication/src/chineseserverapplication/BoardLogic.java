@@ -8,7 +8,7 @@ package chineseserverapplication;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardLogic extends Thread
+public class BoardLogic
 {
     private boolean isStared;
     
@@ -156,6 +156,8 @@ public class BoardLogic extends Thread
                                     
                                     communication.movePawnInfo(p);
                                     
+                                    ifGameIsWin();
+                                    
                                     nextPlayerTour();
                                     
                                     return;
@@ -173,31 +175,27 @@ public class BoardLogic extends Thread
     }
     
     
-    @Override
-    public void run()
+    public synchronized void ifGameIsWin()
     {
-        while (true)
+        for (OneColorPawns ocp : colorPawns)
         {
-            for (OneColorPawns ocp : colorPawns)
+            int howManyInHome = 0;
+            for (Pawn p : ocp.getPawnsList())
             {
-                int howManyInHome = 0;
-                for (Pawn p : ocp.getPawnsList())
+                if (p.getPosition() > 59)
                 {
-                    if (p.getPosition() > 59)
-                    {
-                        howManyInHome++;
-                    }
+                    howManyInHome++;
                 }
-                if (howManyInHome == 4)
+            }
+            if (howManyInHome == 4)
+            {
+                for (Player player : players)
                 {
-                    for (Player player : players)
+                    if (player.getColor().equals(ocp.getColor()))
                     {
-                        if (player.getColor().equals(ocp.getColor()))
-                        {
-                            communication.endGame(player.getNickname());
-                            System.out.println("Koniec gry. Wygrał : " + player.getNickname());
-                            System.exit(0);
-                        }
+                        communication.endGame(player.getNickname());
+                        System.out.println("Koniec gry. Wygrał : " + player.getNickname());
+                        System.exit(0);
                     }
                 }
             }
