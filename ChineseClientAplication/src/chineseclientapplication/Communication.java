@@ -5,11 +5,14 @@
  */
 package chineseclientapplication;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
+import java.util.Scanner;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -17,38 +20,119 @@ import java.net.Socket;
  */
 public class Communication extends Thread
 {
-    private Socket socket;
-    private BufferedReader input;
-    public Communication(Socket s) throws IOException
+    private Socket serverSocket;
+    
+    private boolean isConnected;
+    
+    private PrintWriter output;
+    
+    private List<Player> playerList;
+    public Communication(String serverName, int port, String nickname, List<Player> playerList) throws IOException
     {
-        this.socket = s;
-        this.input = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+        connectToServer(serverName, port, nickname);
+        if (isConnected)
+        {
+            System.out.println("Połaczono z serverem");
+            this.start();
+        }
+        this.playerList = playerList;
     }
-    public void run()
+    
+    private void connectToServer(String serverName, int port, String nickname) throws IOException
     {
         try
         {
-            while(true)
+            serverSocket = new Socket(serverName, port);
+            if (serverSocket.isConnected())
             {
-                String response = input.readLine();
-                System.out.println(response);
+                output = new PrintWriter(serverSocket.getOutputStream(), true);
+                sendToServer(nickname);
+                isConnected = true;
             }
+            else
+            {
+                isConnected = false;
+            }
+        }
+        catch(IOException e)
+        {
+            isConnected = false;
+        }
+    }
+    
+    private void sendToServer(String message)
+    {
+        output.println(message);
+    }
+    
+    private void decodeJson(String message)
+    {
+        try
+        {
+           JSONObject json = new JSONObject(message);
+           String operation = json.getString("Operation");
+           if (operation.equals("addPlayer"))
+           {
+               Player p = new Player(json.getString("nickname"), json.getString("Color"), json.getBoolean("status"), playerList);
+           }
+           else if (operation.equals("changePlayerStatus"))
+           {
+               for (Player p : playerList)
+               {
+                   if (json.getString("nickname").equals(p.getNickname()))
+                   {
+                       p.changePlayerStatus(json.getBoolean("status"));
+                       break;
+                   }
+               }
+           }
+           else if (operation.equals("removePlayer"))
+           {
+               for (Player p : playerList)
+               {
+                   if (json.getString("nickname").equals(p.getNickname()))
+                   {
+                       p.removePlayer();
+                       break;
+                   }
+               }
+           }
+        }
+        catch (JSONException e)
+        {
+            
+        }
+    }
+    
+    private void reciveMessageFromServer() throws IOException
+    {
+        try
+        {
+            Scanner input = new Scanner( new InputStreamReader(serverSocket.getInputStream()) );
+            String inputString = input.next();
+            System.out.println(inputString);
+            decodeJson(inputString);
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            isConnected = false;
         }
-        finally
+    }
+    
+    @Override
+    public void run()
+    {
+        while (isConnected)
         {
             try
             {
-                input.close();
+                reciveMessageFromServer();
             }
-            catch (Exception e)
+            catch (IOException ex) 
             {
-                e.printStackTrace();
+                isConnected = false;
             }
-              
         }
+        System.out.println("Utracono połączenie");
     }
 }
