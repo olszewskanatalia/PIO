@@ -66,27 +66,34 @@ public class Player extends Thread
     
     public synchronized boolean addPlayer(Socket playerSocket, Colors colors) throws IOException
     {
-        Scanner input = new Scanner( new InputStreamReader(playerSocket.getInputStream()) );
-        this.playerSocket = playerSocket;
-        this.nickname = input.next();
-        if (!players.isEmpty())
+        try
         {
-            if (!players.stream().noneMatch((p) -> (nickname.equals(p.getNickname())))) 
+            Scanner input = new Scanner( new InputStreamReader(playerSocket.getInputStream()) );
+            this.playerSocket = playerSocket;
+            this.nickname = input.next();
+            if (!players.isEmpty())
             {
-                return false;
+                if (!players.stream().noneMatch((p) -> (nickname.equals(p.getNickname())))) 
+                {
+                    return false;
+                }
             }
+
+            try 
+            {
+                this.color = colors.getFreeColor();
+            }
+            catch (Exception e)
+            {
+               System.out.println("nie udało się wybrać koloru"); 
+            }
+            return this.color != null;
         }
-        
-        try 
+        catch (IOException e)
         {
-            this.color = colors.getFreeColor();
+            playerSocket.close();
+            return false;
         }
-        catch (Exception e)
-        {
-           System.out.println("nie udało się wybrać koloru"); 
-        }
-        return this.color != null;
-        
     }
     
     public synchronized BoardLogic getBoard()
@@ -131,7 +138,7 @@ public class Player extends Thread
         output.println(message);
     }
     
-    public void reciveMessageFromPlayer() throws IOException
+    private void reciveMessageFromPlayer() throws IOException
     {
         try
         {
