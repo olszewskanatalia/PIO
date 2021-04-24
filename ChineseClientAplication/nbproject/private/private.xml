@@ -5,7 +5,7 @@
             <url>src/chineseclientapplication/ChineseClientApplication.java</url>
             <bookmark id="1">
                 <name/>
-                <line>26</line>
+                <line>24</line>
                 <key/>
             </bookmark>
         </file>
@@ -14,6 +14,7 @@
         <group>
             <file>file:/C:/Studia/II%20semestr/PIO/client/PIO/ChineseClientAplication/src/chineseclientapplication/Communication.java</file>
             <file>file:/C:/Studia/II%20semestr/PIO/client/PIO/ChineseClientAplication/src/chineseclientapplication/ChineseClientApplication.java</file>
+            <file>file:/C:/Studia/II%20semestr/PIO/client/PIO/ChineseClientAplication/src/chineseclientapplication/Player.java</file>
         </group>
     </open-files>
 </project-private>

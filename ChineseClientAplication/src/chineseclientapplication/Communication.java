@@ -97,6 +97,30 @@ public class Communication extends Thread
                    }
                }
            }
+           else if (operation.equals("startGame"))
+           {
+               
+           }
+           else if (operation.equals("initPawn"))
+           {
+               
+           }
+           else if (operation.equals("movePawn"))
+           {
+               
+           }
+           else if (operation.equals("thrownDice"))
+           {
+               
+           }
+           else if (operation.equals("gameStatus"))
+           {
+               
+           }
+           else if (operation.equals("endGame"))
+           {
+               
+           }
         }
         catch (JSONException e)
         {
