@@ -103,7 +103,7 @@ public class WaitingRoom extends Thread {
     }
     
     
-    public static void waitingRoom( List<Player> players, ServerCommunication communication, BoardLogic board, Colors colors) throws IOException
+    public static void waitingRoom( List<Player> players, ServerCommunication communication, BoardLogic board, Colors colors)
     {
         WaitingRoom waitingRoom = new WaitingRoom(players, communication, board, colors);
         waitingRoom.start();
