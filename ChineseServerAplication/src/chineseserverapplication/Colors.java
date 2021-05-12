@@ -3,10 +3,6 @@ package chineseserverapplication;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author jakub
- */
 public class Colors {
 
     List<Color> colors;

@@ -48,7 +48,6 @@ public class WaitingRoom extends Thread {
 
     public void addNewPlayer(Socket socket, BoardLogic board, Colors colors) {
         Thread t = new Thread(() -> {
-            System.out.println("tutaj jestem jeszcze");
             try {
                 Player newPlayer = new Player(socket, players, communication, board, colors);
 
