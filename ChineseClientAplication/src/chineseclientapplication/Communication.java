@@ -17,7 +17,7 @@ public class Communication extends Thread {
 
     private PrintWriter output;
 
-    private List<Player> playerList;
+    private final List<Player> playerList;
 
     public Communication(String serverName, int port, String nickname, List<Player> playerList) throws IOException {
         connectToServer(serverName, port, nickname);
@@ -28,7 +28,7 @@ public class Communication extends Thread {
         this.playerList = playerList;
     }
 
-    private void connectToServer(String serverName, int port, String nickname) throws IOException {
+    public void connectToServer(String serverName, int port, String nickname) throws IOException {
         try {
             serverSocket = new Socket(serverName, port);
             if (serverSocket.isConnected()) {
@@ -83,6 +83,19 @@ public class Communication extends Thread {
         } catch (JSONException e) {
 
         }
+    }
+
+    public void sendRolldDiceAsk() {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "movePawn");
+        sendToServer(toSend.toString());
+    }
+
+    public void sendMovePawnAsk(String pawnId) {
+        JSONObject toSend = new JSONObject();
+        toSend.put("Operation", "movePawn");
+        toSend.put("PawnID", pawnId);
+        sendToServer(toSend.toString());
     }
 
     private void reciveMessageFromServer() throws IOException {

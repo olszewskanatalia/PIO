@@ -11,6 +11,7 @@ public class ChineseClientApplication {
         List<Player> playerList = new ArrayList<>();
 
         Communication comm = new Communication("localhost", 6000, "nickname", playerList);
+        Board board = new Board(comm);
     }
 
 }

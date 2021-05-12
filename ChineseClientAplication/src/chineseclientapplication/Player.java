@@ -4,11 +4,11 @@ import java.util.List;
 
 public class Player {
 
-    private String nickname;
-    private String color;
+    private final String nickname;
+    private final String color;
     private boolean ready;
 
-    private List<Player> playerList;
+    private final List<Player> playerList;
 
     public Player(String nickname, String color, boolean ready, List<Player> playerList) {
         this.nickname = nickname;
