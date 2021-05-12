@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class GameCubeTest {
 
-    private GameCube gameCube;
+    private final GameCube gameCube;
 
     public GameCubeTest() {
         gameCube = new GameCube();
